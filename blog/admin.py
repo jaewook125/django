@@ -5,9 +5,17 @@ from .models import Post, Comment, Tag
 # admin.site.register(Post, PostAdmin)
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['id','title','content_size','status','created_at', 'updated_at']
+    list_display = ['id','title','tag_list','content_size',
+                    'status','created_at', 'updated_at']
 
     actions = ['make_published','make_draft']
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related('tag_set')
+        #어드민의 태그리스트 SQL을 없애주는 함수
+    def tag_list(request,post):
+        return ', '.join(tag.name for tag in post.tag_set.all()) #list comprehension 문법?
 
     def content_size(self, post):
         return mark_safe('<strong>{}<strong>글자'.format(len(post.content)))
@@ -27,7 +35,14 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'author','post_content_len']
+
+    def post_content_len(self,comment):
+        return '{}글자'.format(len(comment.post.content))
+
+    def get_queryset(self,request):
+        qs = super().get_queryset(request)
+        return qs.select_related('post')
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
