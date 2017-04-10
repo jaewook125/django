@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import Profile
 
 class SignupForm(UserCreationForm):
@@ -17,3 +17,12 @@ class SignupForm(UserCreationForm):
             address =  self.cleand_data['address'])
 
         return user
+
+class LoginForm(AuthenticationForm):
+    answer = forms.IntegerField(label='3+3=?')
+
+    def clean_answer(self):
+        answer = self.cleaned_data.get('answer', None)
+        if answer != 6:
+            raise forms.ValidationError('mismatched!')
+        return answer
