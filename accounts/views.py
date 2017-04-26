@@ -9,7 +9,7 @@ def signup(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return redirect(settings.LOGIN_URL)
+            return redirect(settings.LOGIN_URL) #회원가입에 성공하면 LOGIN 페이지로 이동 
     else:
         form = SignupForm()
     return render(request, 'accounts/signup_form.html',{

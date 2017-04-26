@@ -1,0 +1,63 @@
+<!-- blog/templates/blog/post_list.html -->
+{% extends "blog/layout.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>블로그<sup>#</sup></h1>
+    <p>뭐가 궁금합니까~</p>
+    <p>
+      <a class="btn btn-lg btn-primary" href="{% url "blog:post_new" %}">
+        글 써봐 &raquo;
+      </a>
+    </p>
+  </div>
+</div>
+
+<div class="container">
+<div class="row">
+  <div class="col-sm-12">
+    <form action="" method="get">
+      <input type="text" name="q" value="{{ q }}" />
+
+      <input type="submit" value="검색" class="btn btn-primary"/>
+    </form>
+    <ul>
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>author</th>
+            <th>updated_at</th>
+          </tr>
+        </thead>
+        <tbody>
+      {% for post in post_list %}
+      <tr>
+          <td>{{post.id}}</td>
+          <td>
+            <a href="{% url "blog:post_detail" post.id %}"> {{post.title}}</a>
+            {% for tag in post.tag_set.all %}
+              <span class="label label-info">{{ tag.name }}</span>
+            {% endfor %}
+          </td>
+
+          <td><small>{{post.author}}</small></td>
+          <td><small>{{post.updated_at}}</small></td>
+          <!-- <td>
+            {{ post.comment_set.all }}
+          </td> -->
+      </tr>
+      {% endfor %}
+          </tbody>
+      </table>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+
+{% endblock %}
